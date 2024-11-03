@@ -40,43 +40,61 @@
 
 
 
-# Compile and install the resample2d third-party library
-echo "Installing third-party libraries..."
+# # Compile and install the resample2d third-party library
+# echo "Installing third-party libraries..."
 
-# Process resample2d library
-echo "Processing third-party library: resample2d..."
+# # Process resample2d library
+# echo "Processing third-party library: resample2d..."
 
-# Navigate to the correct directory
-cd imaginaire/third_party/resample2d || { echo "Failed to access directory: imaginaire/third_party/resample2d"; exit 1; }
+# # Navigate to the correct directory
+# cd imaginaire/third_party/resample2d || { echo "Failed to access directory: imaginaire/third_party/resample2d"; exit 1; }
 
-# Clean previous build files
-rm -rf build dist *info || { echo "Failed to clean build files for resample2d"; exit 1; }
+# # Clean previous build files
+# rm -rf build dist *info || { echo "Failed to clean build files for resample2d"; exit 1; }
 
-# Specify the src path to match the updated setup.py structure
-echo "Building and installing resample2d..."
-python setup.py install || { echo "Failed to install resample2d"; exit 1; }
-echo "resample2d installed successfully."
+# # Specify the src path to match the updated setup.py structure
+# echo "Building and installing resample2d..."
+# python setup.py install || { echo "Failed to install resample2d"; exit 1; }
+# echo "resample2d installed successfully."
 
-# Return to the initial directory
-cd "$CURRENT" || { echo "Failed to return to ${CURRENT} directory"; exit 1; }
+# # Return to the initial directory
+# cd "$CURRENT" || { echo "Failed to return to ${CURRENT} directory"; exit 1; }
 
 
 # # Process bias_act library
 # echo "Processing third-party library: bias_act..."
+
+# # Navigate to the correct directory
 # cd imaginaire/third_party/bias_act || { echo "Failed to access directory: imaginaire/third_party/bias_act"; exit 1; }
+
+# # Clean previous build files
 # rm -rf build dist *info || { echo "Failed to clean build files for bias_act"; exit 1; }
+
+# # Specify the src path to match the updated setup.py structure
 # echo "Building and installing bias_act..."
 # python setup.py install || { echo "Failed to install bias_act"; exit 1; }
 # echo "bias_act installed successfully."
-# cd ${CURRENT} || { echo "Failed to return to ${CURRENT} directory"; exit 1; }
 
-# # Process upfirdn2d library
-# echo "Processing third-party library: upfirdn2d..."
-# cd imaginaire/third_party/upfirdn2d || { echo "Failed to access directory: imaginaire/third_party/upfirdn2d"; exit 1; }
-# rm -rf build dist *info || { echo "Failed to clean build files for upfirdn2d"; exit 1; }
-# echo "Building and installing upfirdn2d..."
-# python setup.py install || { echo "Failed to install upfirdn2d"; exit 1; }
-# echo "upfirdn2d installed successfully."
-# cd ${CURRENT} || { echo "Failed to return to ${CURRENT} directory"; exit 1; }
+# # Return to the initial directory
+# cd "$CURRENT" || { echo "Failed to return to ${CURRENT} directory"; exit 1; }
+
+
+# Process upfirdn2d library
+echo "Processing third-party library: upfirdn2d..."
+
+# Navigate to the upfirdn2d directory
+cd imaginaire/third_party/upfirdn2d || { echo "Failed to access directory: imaginaire/third_party/upfirdn2d"; exit 1; }
+
+# Clean up any previous builds
+rm -rf build dist *info || { echo "Failed to clean build files for upfirdn2d"; exit 1; }
+
+# Build and install upfirdn2d
+echo "Building and installing upfirdn2d..."
+python setup.py install || { echo "Failed to install upfirdn2d"; exit 1; }
+echo "upfirdn2d installed successfully."
+
+# Return to the original directory
+cd "${CURRENT}" || { echo "Failed to return to the initial directory"; exit 1; }
+
 
 echo "All third-party libraries installed successfully."

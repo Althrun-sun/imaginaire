@@ -1,43 +1,34 @@
-# flake8: noqa
+# Updated setup.py for upfirdn2d package
 from setuptools import setup
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 import os
+import torch
 
-
+# Get CUDA version for compatibility checks
 cuda_version = os.getenv('CUDA_VERSION')
-print('CUDA_VERSION: {}'.format(cuda_version))
+torch_cuda_version = torch.version.cuda if torch.cuda.is_available() else 'None'
+print('System CUDA Version:', cuda_version)
+print('PyTorch CUDA Version:', torch_cuda_version)
 
-nvcc_args = list()
-# nvcc_args.append('-gencode')
-# nvcc_args.append('arch=compute_50,code=sm_50')
-# nvcc_args.append('-gencode')
-# nvcc_args.append('arch=compute_52,code=sm_52')
-# nvcc_args.append('-gencode')
-# nvcc_args.append('arch=compute_60,code=sm_60')
-# nvcc_args.append('-gencode')
-# nvcc_args.append('arch=compute_61,code=sm_61')
-nvcc_args.append('-gencode')
-nvcc_args.append('arch=compute_70,code=sm_70')
-nvcc_args.append('-gencode')
-nvcc_args.append('arch=compute_75,code=sm_75')
-if cuda_version is not None:
-    if cuda_version >= '11.0':
-        nvcc_args.append('-gencode')
-        nvcc_args.append('arch=compute_80,code=sm_80')
-nvcc_args.append('-Xcompiler')
-nvcc_args.append('-Wall')
-nvcc_args.append('-std=c++14')
+# Set NVCC compilation arguments
+nvcc_args = [
+    '-gencode', 'arch=compute_70,code=sm_70',
+    '-gencode', 'arch=compute_75,code=sm_75',
+    '-Xcompiler', '-Wall', '-std=c++17',
+    '-D__CUDA_NO_HALF_OPERATORS__',
+    '-D__CUDA_NO_HALF_CONVERSIONS__',
+    '-D__CUDA_NO_HALF2_OPERATORS__'
+]
 
 setup(
     name='upfirdn2d_cuda',
     py_modules=['upfirdn2d'],
     ext_modules=[
-        CUDAExtension('upfirdn2d_cuda', [
-            './src/upfirdn2d_cuda.cc',
-            './src/upfirdn2d_cuda_kernel.cu'
-        ], extra_compile_args={'cxx': ['-Wall', '-std=c++14'],
-                               'nvcc': nvcc_args})
+        CUDAExtension(
+            'upfirdn2d_cuda',
+            ['./src/upfirdn2d_cuda.cc', './src/upfirdn2d_cuda_kernel.cu'],
+            extra_compile_args={'cxx': ['-Wall', '-std=c++17'], 'nvcc': nvcc_args}
+        )
     ],
-    cmdclass={
-        'build_ext': BuildExtension
-    })
+    cmdclass={'build_ext': BuildExtension}
+)
