@@ -1,43 +1,51 @@
-# flake8: noqa
-from setuptools import setup
-from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 import os
+import torch
+from torch.utils.cpp_extension import CUDAExtension, BuildExtension
+from setuptools import setup
+import subprocess
 
+# Determine CUDA version
+cuda_version = torch.version.cuda
+print(f"Detected PyTorch CUDA version: {cuda_version}")
+system_cuda_version = os.getenv('CUDA_VERSION', 'Unknown')
+print(f"Detected system CUDA version: {system_cuda_version}")
 
-cuda_version = os.getenv('CUDA_VERSION')
-print('CUDA_VERSION: {}'.format(cuda_version))
+# Define NVCC arguments
+nvcc_args = [
+    '-D__CUDA_NO_HALF_OPERATORS__',
+    '-D__CUDA_NO_HALF_CONVERSIONS__',
+    '-D__CUDA_NO_HALF2_OPERATORS__',
+    '-Xcompiler',
+    '-fPIC',
+    '-std=c++17'  # Updated for C++17 support
+]
 
-nvcc_args = list()
-# nvcc_args.append('-gencode')
-# nvcc_args.append('arch=compute_50,code=sm_50')
-# nvcc_args.append('-gencode')
-# nvcc_args.append('arch=compute_52,code=sm_52')
-# nvcc_args.append('-gencode')
-# nvcc_args.append('arch=compute_60,code=sm_60')
-# nvcc_args.append('-gencode')
-# nvcc_args.append('arch=compute_61,code=sm_61')
-nvcc_args.append('-gencode')
-nvcc_args.append('arch=compute_70,code=sm_70')
-nvcc_args.append('-gencode')
-nvcc_args.append('arch=compute_75,code=sm_75')
-if cuda_version is not None:
-    if cuda_version >= '11.0':
-        nvcc_args.append('-gencode')
-        nvcc_args.append('arch=compute_80,code=sm_80')
-nvcc_args.append('-Xcompiler')
-nvcc_args.append('-Wall')
-nvcc_args.append('-std=c++14')
+# Add architecture flags for 4060 Ti (Ada Lovelace, usually compute_89)
+nvcc_args.extend(['-gencode', 'arch=compute_89,code=sm_89'])
+print(f"Using NVCC compilation arguments: {nvcc_args}")
 
+# Check environment and versions
+print("PyTorch and CUDA configuration:")
+print(f"  PyTorch version: {torch.__version__}")
+print(f"  CUDA available: {torch.cuda.is_available()}")
+print(f"  PyTorch CUDA Version: {torch.version.cuda}")
+print(f"  System CUDA Version: {system_cuda_version}")
+
+# Proceed with setup
 setup(
     name='correlation_cuda',
-    py_modules=['correlation'],
     ext_modules=[
-        CUDAExtension('correlation_cuda', [
-            './src/correlation_cuda.cc',
-            './src/correlation_cuda_kernel.cu'
-        ], extra_compile_args={'cxx': ['-Wall', '-std=c++14'],
-                               'nvcc': nvcc_args})
+        CUDAExtension(
+            name='correlation_cuda',
+            sources=['src/correlation_cuda.cc', 'src/correlation_cuda_kernel.cu'],
+            extra_compile_args={
+                'cxx': ['-O3'],
+                'nvcc': nvcc_args
+            }
+        ),
     ],
     cmdclass={
         'build_ext': BuildExtension
-    })
+    }
+)
+print("Setup script executed successfully.")
