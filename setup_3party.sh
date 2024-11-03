@@ -21,33 +21,45 @@
 
 
 
-# Compile and install the channelnorm third-party library
-echo "Processing third-party library: channelnorm..."
+# # Compile and install the channelnorm third-party library
+# echo "Processing third-party library: channelnorm..."
+
+# # Navigate to the correct directory
+# cd imaginaire/third_party/channelnorm || { echo "Failed to access directory: imaginaire/third_party/channelnorm"; exit 1; }
+
+# # Clean previous build files
+# rm -rf build dist *info || { echo "Failed to clean build files for channelnorm"; exit 1; }
+
+# # Specify the src path to match the updated setup.py structure
+# echo "Building and installing channelnorm..."
+# python setup.py install || { echo "Failed to install channelnorm"; exit 1; }
+# echo "channelnorm installed successfully."
+
+# # Return to the initial directory
+# cd "$CURRENT" || { echo "Failed to return to ${CURRENT} directory"; exit 1; }
+
+
+
+# Compile and install the resample2d third-party library
+echo "Installing third-party libraries..."
+
+# Process resample2d library
+echo "Processing third-party library: resample2d..."
 
 # Navigate to the correct directory
-cd imaginaire/third_party/channelnorm || { echo "Failed to access directory: imaginaire/third_party/channelnorm"; exit 1; }
+cd imaginaire/third_party/resample2d || { echo "Failed to access directory: imaginaire/third_party/resample2d"; exit 1; }
 
 # Clean previous build files
-rm -rf build dist *info || { echo "Failed to clean build files for channelnorm"; exit 1; }
+rm -rf build dist *info || { echo "Failed to clean build files for resample2d"; exit 1; }
 
 # Specify the src path to match the updated setup.py structure
-echo "Building and installing channelnorm..."
-python setup.py install || { echo "Failed to install channelnorm"; exit 1; }
-echo "channelnorm installed successfully."
+echo "Building and installing resample2d..."
+python setup.py install || { echo "Failed to install resample2d"; exit 1; }
+echo "resample2d installed successfully."
 
 # Return to the initial directory
 cd "$CURRENT" || { echo "Failed to return to ${CURRENT} directory"; exit 1; }
 
-
-
-# # Process resample2d library
-# echo "Processing third-party library: resample2d..."
-# cd imaginaire/third_party/resample2d || { echo "Failed to access directory: imaginaire/third_party/resample2d"; exit 1; }
-# rm -rf build dist *info || { echo "Failed to clean build files for resample2d"; exit 1; }
-# echo "Building and installing resample2d..."
-# python setup.py install || { echo "Failed to install resample2d"; exit 1; }
-# echo "resample2d installed successfully."
-# cd ${CURRENT} || { echo "Failed to return to ${CURRENT} directory"; exit 1; }
 
 # # Process bias_act library
 # echo "Processing third-party library: bias_act..."
